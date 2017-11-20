@@ -20,78 +20,78 @@ import com.google.common.collect.ImmutableList;
 import tzeth.exhume.ExhumeException;
 
 public final class Elements implements Iterable<Element> {
-	private final NodeList nodeList;
-	
-	public Elements(NodeList nodeList) {
-		this.nodeList = checkNotNull(nodeList);
-	}
-	
-	/**
-	 * Returns all elements that are the children of {@code node}.
-	 */
-	public static Elements under(Node node) {
-		return new Elements(node.getChildNodes());
-	}
-	
-	public static Elements matching(Node node, String expression) {
-		try {
-			XPath xPath = XPathFactory.newInstance().newXPath();
-			NodeList nodes = (NodeList) xPath.compile(expression).evaluate(node, XPathConstants.NODESET);
-			return new Elements(nodes);
-		} catch (XPathExpressionException e) {
-			throw new ExhumeException(e);
-		}
-	}
+    private final NodeList nodeList;
 
-	@Override
-	public Iterator<Element> iterator() {
-		return new IteratorImpl();
-	}
-	
-	public ImmutableList<Element> asList() {
-		ImmutableList.Builder<Element> builder = ImmutableList.builder();
-		for (int n = 0; n < nodeList.getLength(); ++n) {
-			Node node = nodeList.item(n);
-			if (node instanceof Element) {
-				builder.add((Element) node);
-			}
-		}
-		return builder.build();
-	}
+    public Elements(NodeList nodeList) {
+        this.nodeList = checkNotNull(nodeList);
+    }
 
-	
-	private class IteratorImpl implements Iterator<Element> {
-		private int index;
-		@Nullable
-		private Element next;
+    /**
+     * Returns all elements that are the children of {@code node}.
+     */
+    public static Elements under(Node node) {
+        return new Elements(node.getChildNodes());
+    }
 
-		public IteratorImpl() {
-			this.next = getNext();
-		}
-		
-		private Element getNext() {
-			for (; index < nodeList.getLength(); ++index) {
-				Node node = nodeList.item(index);
-				if (node instanceof Element) {
-					++index;
-					return (Element) node;
-				}
-			}
-			return null;
-		}
-		
-		@Override
-		public boolean hasNext() {
-			return this.next != null;
-		}
+    public static Elements matching(Node node, String expression) {
+        try {
+            XPath xPath = XPathFactory.newInstance().newXPath();
+            NodeList nodes = (NodeList) xPath.compile(expression).evaluate(node,
+                    XPathConstants.NODESET);
+            return new Elements(nodes);
+        } catch (XPathExpressionException e) {
+            throw new ExhumeException(e);
+        }
+    }
 
-		@Override
-		public Element next() {
-			checkState(hasNext());
-			Element ret = this.next;
-			this.next = getNext();
-			return ret;
-		}
-	}
-	
+    @Override
+    public Iterator<Element> iterator() {
+        return new IteratorImpl();
+    }
+
+    public ImmutableList<Element> asList() {
+        ImmutableList.Builder<Element> builder = ImmutableList.builder();
+        for (int n = 0; n < nodeList.getLength(); ++n) {
+            Node node = nodeList.item(n);
+            if (node instanceof Element) {
+                builder.add((Element) node);
+            }
+        }
+        return builder.build();
+    }
+
+    private class IteratorImpl implements Iterator<Element> {
+        private int index;
+        @Nullable
+        private Element next;
+
+        public IteratorImpl() {
+            this.next = getNext();
+        }
+
+        private Element getNext() {
+            for (; index < nodeList.getLength(); ++index) {
+                Node node = nodeList.item(index);
+                if (node instanceof Element) {
+                    ++index;
+                    return (Element) node;
+                }
+            }
+            return null;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return this.next != null;
+        }
+
+        @Override
+        public Element next() {
+            checkState(hasNext());
+            Element ret = this.next;
+            this.next = getNext();
+            return ret;
+        }
+    }
+
 }

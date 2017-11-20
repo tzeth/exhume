@@ -14,40 +14,41 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 public final class DomParsers {
-	public static Document parseFile(File file) throws SAXException, IOException {
-		DocumentBuilder builder = createBuilder();
-		return builder.parse(file);
-	}
+    public static Document parseFile(File file) throws SAXException, IOException {
+        DocumentBuilder builder = createBuilder();
+        return builder.parse(file);
+    }
 
-	public static Document parseStream(InputStream inputStream) throws SAXException, IOException {
-		DocumentBuilder builder = createBuilder();
-		return builder.parse(inputStream);
-	}
+    public static Document parseStream(InputStream inputStream) throws SAXException, IOException {
+        DocumentBuilder builder = createBuilder();
+        return builder.parse(inputStream);
+    }
 
-	public static Document parseSource(InputSource source) throws SAXException, IOException {
-		DocumentBuilder builder = createBuilder();
-		return builder.parse(source);
-	}
-	
-	public static Document parseXml(String xml) throws SAXException {
-		try {
-			InputSource source = new InputSource(new StringReader(xml));
-			return parseSource(source);
-		} catch (IOException e) {
-			// No IO is being done
-			throw new RuntimeException(e);
-		}
-	}
-	
-	private static DocumentBuilder createBuilder() {
-		try {
-			DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
-			return builderFactory.newDocumentBuilder();
-		} catch (ParserConfigurationException e) {
-			throw new RuntimeException(e);
-		}
-	}
-	
-	private DomParsers() {/**/}
+    public static Document parseSource(InputSource source) throws SAXException, IOException {
+        DocumentBuilder builder = createBuilder();
+        return builder.parse(source);
+    }
+
+    public static Document parseXml(String xml) throws SAXException {
+        try {
+            InputSource source = new InputSource(new StringReader(xml));
+            return parseSource(source);
+        } catch (IOException e) {
+            // No IO is being done
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static DocumentBuilder createBuilder() {
+        try {
+            DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+            return builderFactory.newDocumentBuilder();
+        } catch (ParserConfigurationException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private DomParsers() {
+        /**/}
 
 }
