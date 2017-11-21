@@ -86,15 +86,48 @@ public final class XmlBuilder {
             this.name = checkNotEmpty(name);
         }
 
-        public Element attribute(String name, String value) {
+        public Element withAttribute(String name, String value) {
             attributes.put(checkNotEmpty(name), checkNotNull(value));
             return this;
         }
 
-        public Element attribute(String name, Object value) {
-            return attribute(name, String.valueOf(checkNotNull(value)));
+        public Element withAttribute(String name, Object value) {
+            return withAttribute(name, String.valueOf(checkNotNull(value)));
+        }
+        
+        public Element withAttributes(String name1, String value1, String name2, String value2) {
+            withAttribute(name1, value1);
+            withAttribute(name2, value2);
+            return this;
+        }
+        
+        public Element withAttributes(String name1, Object value1, String name2, Object value2) {
+            withAttribute(name1, String.valueOf(checkNotNull(value1)));
+            withAttribute(name2, String.valueOf(checkNotNull(value2)));
+            return this;
+        }
+        
+        public Element withAttributes(String name1, String value1, String name2, String value2,
+                String name3, String value3) {
+            withAttribute(name1, value1);
+            withAttribute(name2, value2);
+            withAttribute(name3, value3);
+            return this;
+        }
+        
+        public Element withAttributes(String name1, Object value1, String name2, Object value2,
+                String name3, Object value3) {
+            withAttribute(name1, String.valueOf(checkNotNull(value1)));
+            withAttribute(name2, String.valueOf(checkNotNull(value2)));
+            withAttribute(name3, String.valueOf(checkNotNull(value3)));
+            return this;
         }
 
+        public Element withAttributes(Map<String, ?> attrs) {
+            attrs.entrySet().forEach(e -> withAttribute(e.getKey(), e.getValue()));
+            return this;
+        }
+        
         public Element withValue(@Nullable String value) {
             this.value = value;
             mixedContentNotSupported();
@@ -114,6 +147,15 @@ public final class XmlBuilder {
             return child;
         }
 
+        // TODO: Rename me pop(). Add a void close(), and let this class implement AutoCloseable.
+        // That way we have two different ways of building/closing elements, and users can choose
+        // the style that fits their preferences best.
+        // Question: What purpose would the close() method have, though? We're always operating
+        // directly on the Element itself, never the XmlBuilder class. If we did the latter, e.g.
+        // have methods like withAttributes() directly on the XmlBuilder class itself, then a 
+        // close() method would make sense. One purpose could still be to make sure all elements
+        // are closed, but there's no technical reason why this would be required - we can still
+        // produce the correct resulting XML even if elements are left open.
         public Element close() {
             // FIXME: Very ugly to return null if the root element is closed.
             XmlBuilder.this.stack.pop();
