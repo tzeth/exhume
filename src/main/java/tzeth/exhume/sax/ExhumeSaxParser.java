@@ -148,6 +148,7 @@ public final class ExhumeSaxParser {
 
         public void invoke(StartOfElement soe) {
             try {
+                method.setAccessible(true);
                 method.invoke(object, soe);
             } catch (IllegalAccessException e) {
                 throw new ExhumeException(e);
@@ -198,6 +199,7 @@ public final class ExhumeSaxParser {
         public void invoke(EndOfElement eoe) {
             try {
                 Object value = valueFactory.of(eoe);
+                method.setAccessible(true);
                 method.invoke(object, value);
             } catch (IllegalAccessException e) {
                 throw new ExhumeException(e);

@@ -1,8 +1,7 @@
 package tzeth.exhume.sax;
 
-import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.*;
 import static tzeth.exhume.sax.Path.SEPARATOR;
-import static tzeth.preconds.MorePreconditions.checkNotEmpty;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,9 +20,14 @@ public final class PathExpression {
     private final boolean absolute;
 
     public static PathExpression of(String parent, String leaf) {
-        checkNotEmpty(leaf);
+        checkNotNull(leaf);
         if (parent.isEmpty()) {
             return of(leaf);
+        }
+        if (leaf.isEmpty()) {
+            return parent.endsWith(SEPARATOR)
+                    ? of(parent.substring(0, parent.length() - 1))
+                    : of(parent);
         }
         if (leaf.startsWith(SEPARATOR)) {
             throw new ExhumeException("Leaf expression cannot be absolute when using a root path");

@@ -39,7 +39,7 @@ public final class ExhumeSaxParserTest {
         assertEquals(expectedPrice, actualPrice);
     }
 
-    public static class BookPriceGatherer {
+    private static class BookPriceGatherer {
         public int totalPrice;
 
         @ElementEnd("/Inventory/Books/Book/Price")
@@ -66,7 +66,7 @@ public final class ExhumeSaxParserTest {
     }
 
     @RootPath("/Inventory/DVDs/DVD")
-    public static class DvdPriceGatherer {
+    private static class DvdPriceGatherer {
         public int totalPrice;
 
         @ElementEnd("Price")
@@ -92,7 +92,7 @@ public final class ExhumeSaxParserTest {
         assertEquals(expectedPrice, actualPrice);
     }
 
-    public static class AllPricesGatherer {
+    private static class AllPricesGatherer {
         public int totalPrice;
 
         @ElementEnd("Price")
@@ -117,7 +117,7 @@ public final class ExhumeSaxParserTest {
         assertEquals(expectedTitles, g.titles);
     }
 
-    public static class OnSaleDvdGatherer {
+    private static class OnSaleDvdGatherer {
         public final List<String> titles = new ArrayList<>();
         private boolean onSale;
 
@@ -168,7 +168,7 @@ public final class ExhumeSaxParserTest {
         assertEquals(LocalDate.of(2017, 11, 17), d.localDateVal);
     }
 
-    public static class TypeDetector {
+    private static class TypeDetector {
         public String stringVal;
         public Integer integerVal;
         public Double doubleVal;
@@ -240,7 +240,7 @@ public final class ExhumeSaxParserTest {
     }
 
     @RootPath("/Inventory/Books/Book")
-    public static class AbsoluteLeaf {
+    private static class AbsoluteLeaf {
 
         @ElementEnd("/Title")
         public void title(String title) {
@@ -261,7 +261,7 @@ public final class ExhumeSaxParserTest {
         }
     }
 
-    public static class WrongValueType {
+    private static class WrongValueType {
 
         @ElementEnd("/Inventory/Books/Book/Title")
         public void title(Double val) {

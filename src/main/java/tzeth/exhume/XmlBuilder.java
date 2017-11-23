@@ -133,6 +133,13 @@ public final class XmlBuilder {
             mixedContentNotSupported();
             return this;
         }
+        
+        public Element withValue(@Nullable Object value) {
+            String string = (value != null)
+                    ? value.toString()
+                    : null;
+            return withValue(string);
+        }
 
         private void mixedContentNotSupported() {
             boolean mixedContent = !Strings.isNullOrEmpty(this.value) && (this.children.size() > 0);
