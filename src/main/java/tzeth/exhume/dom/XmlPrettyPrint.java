@@ -6,6 +6,7 @@ import static tzeth.preconds.MorePreconditions.checkNotNegative;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -24,6 +25,7 @@ import org.w3c.dom.Document;
  * Pretty prints DOM documents.
  */
 public final class XmlPrettyPrint {
+    // TODO: Make encoding configurable. Always using UTF-8 for now.
     private final int indent;
 
     public XmlPrettyPrint(int indent) {
@@ -37,9 +39,13 @@ public final class XmlPrettyPrint {
     public void write(Document doc, Writer writer) {
         requireNonNull(doc);
         requireNonNull(writer);
+        StreamResult sr = new StreamResult(writer);
+        writeImpl(doc, sr);
+    }
+
+    private void writeImpl(Document doc, StreamResult sr) {
         try {
             DOMSource ds = new DOMSource(doc);
-            StreamResult sr = new StreamResult(writer);
             TransformerFactory tf = createTransformerFactory();
             Transformer trans = createTransform(tf);
             trans.transform(ds, sr);
@@ -60,6 +66,13 @@ public final class XmlPrettyPrint {
         try (Writer writer = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8)) {
             write(doc, writer);
         }
+    }
+    
+    public void write(Document doc, OutputStream out) throws IOException {
+        requireNonNull(doc);
+        requireNonNull(out);
+        StreamResult sr = new StreamResult(out);
+        writeImpl(doc, sr);
     }
     
     private TransformerFactory createTransformerFactory() {
